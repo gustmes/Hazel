@@ -29,7 +29,7 @@ namespace Hazel {
 		virtual void Shutdown();
 	private:
 		GLFWwindow* m_Window;
-		GraphicsContext* m_Context;
+		Scope<GraphicsContext> m_Context;
 
 		struct WindowData
 		{
@@ -38,7 +38,9 @@ namespace Hazel {
 			bool VSync;
 
 			EventCallbackFn EventCallback;
-		} m_Data;
+		};
+		
+		WindowData m_Data;
 	};
 
 }
