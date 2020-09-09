@@ -1,7 +1,7 @@
 #pragma once
-
 #include "hzpch.h"
-#include "Hazel/Core/Core.h"
+
+#include "Hazel/Core/Base.h"
 
 namespace Hazel {
 
@@ -29,13 +29,13 @@ namespace Hazel {
 		EventCategoryMouseButton    = BIT(4)
 	};
 
-#define EVENT_CLASS_TYPE(type) static EventType GetStaticType() { return EventType::##type; }\
+#define EVENT_CLASS_TYPE(type) static EventType GetStaticType() { return EventType::type; }\
 								virtual EventType GetEventType() const override { return GetStaticType(); }\
 								virtual const char* GetName() const override { return #type; }
 
 #define EVENT_CLASS_CATEGORY(category) virtual int GetCategoryFlags() const override { return category; }
 
-	class HAZEL_API Event
+	class Event
 	{
 	public:
 		bool Handled = false;
@@ -45,7 +45,7 @@ namespace Hazel {
 		virtual int GetCategoryFlags() const = 0;
 		virtual std::string ToString() const { return GetName(); }
 
-		inline bool IsInCategory(EventCategory category)
+		bool IsInCategory(EventCategory category)
 		{
 			return GetCategoryFlags() & category;
 		}
@@ -53,14 +53,12 @@ namespace Hazel {
 
 	class EventDispatcher
 	{
-		template<typename T>
-		using EventFn = std::function<bool(T&)>;
 	public:
 		EventDispatcher(Event& event)
 			: m_Event(event)
 		{
 		}
-
+		
 		// F will be deduced by the compiler
 		template<typename T, typename F>
 		bool Dispatch(const F& func)
@@ -80,5 +78,6 @@ namespace Hazel {
 	{
 		return os << e.ToString();
 	}
+
 }
 
